@@ -1,0 +1,186 @@
+<apex:page standardcontroller="Account" extensions="CORE_GSK_PD_searchAccountsController" lightningStylesheets="true" cache="false" sidebar="true">
+    
+    
+    <style>
+        /* This is for the full screen DIV */
+        .popupBackground {
+        /* Background color */
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+        
+        /* Dimensions */
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 998;
+        position: absolute;
+        
+        /* Mouse */
+        cursor:wait;
+        }
+        
+        /* This is for the message DIV */
+        .PopupPanel {
+        /* Background color */
+        
+        /* Dimensions */
+        left: 50%;
+        width: 200px;
+        margin-left: -100px;
+        top: 50%;
+        height: 50px;
+        margin-top: -25px;
+        z-index: 999;
+        position: fixed;
+        
+        /* Mouse */
+        cursor:pointer;
+        }
+    </style>
+    
+    
+    <script>
+    function jsFunction(name,id,type,AccountNumber,primaryParentName)
+    {
+        setAccountDetails(name,id,type,AccountNumber,primaryParentName);
+        // console.log(id);
+        //  console.log(type);
+        //  console.log(AccountNumber);
+    }
+    function confirmAddTerritory() {
+        if(confirm('Add this account to your territory ?')) {
+            getTerritory();
+        }
+        return false;
+    }
+    
+    </script>
+    
+    <apex:form > 
+        <apex:slds >
+            <apex:actionFunction name="setAccountDetails" action="{!setAccountDetailsInApex}" reRender="tabelka"  >
+                <apex:param name="AccountName" value="" assignTo="{!currentAccountName}" />
+                <apex:param name="AccountId" value="" assignTo="{!currentAccountId}"/>
+                <apex:param name="AccountType" value="" assignTo="{!currentAccountType}"/>
+                <apex:param name="AccountInTerritory" value="" assignTo="{!accInTerritory}"/>
+                <apex:param name="primaryParentName" value="" assignTo="{!currentPrimaryParentName}"/>
+            </apex:actionFunction>
+            <apex:actionFunction action="{!getTerritory}" name="getTerritory" rerender="form" status="statusContinuation"/>
+            <apex:pageBlock title="Search for Accounts:">
+                <apex:pageBlockSection showHeader="false" columns="1">
+                    <apex:inputText id="searchText" value="{!searchTextName}" label="{!$Label.CORE_GSK_PD_Search_Terms}" html-placeholder="{!$Label.CORE_GSK_PD_Search_Terms}" style="width: 120px;" />
+                    <apex:inputText id="searchText2" value="{!searchTextLocation}" label="{!$Label.CORE_GSK_PD_Location}" html-placeholder="{!$Label.CORE_GSK_PD_City_of_HCP_HCO}" style="width: 230px;"/>
+                    <apex:selectList label="{!$Label.CORE_GSK_PD_Account_Type}" multiselect="false" size="1" value="{!selectedAccounts}"  > 
+                        <apex:selectOptions value="{!AcountsForRecordType}"/>  
+                    </apex:selectList>
+                </apex:pageBlockSection>  
+            </apex:pageBlock>
+            <apex:pageBlock title="{!$Label.CORE_GSK_PD_Search_Result}" id="block"   >
+                <apex:pageMessages > </apex:pageMessages>
+                <apex:pageBlockButtons location="top">     
+                    <apex:commandButton value="{!$Label.CORE_GSK_PD_Search_Accounts}" action="{!runAccountSync}" reRender="block,results,adrs" status="statusContinuation"  />
+                    <apex:commandButton value="{!$Label.CORE_GSK_PD_New}" action="{!URLFOR($Action.Account.New,null,null,false)}"  rendered="{!newAccountToggle}"   />
+                </apex:pageBlockButtons>    
+                <apex:actionStatus id="statusContinuation" stopText="">
+                    <apex:facet name="start">
+                        <div>
+                            <div class="popupBackground" />
+                            <div class="PopupPanel">
+                                <table border="0" width="100%" height="100%">
+                                    <tr>
+                                        <td align="center"><b>Please Wait</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="center"><img src="{!$Resource.CORE_GSK_PD_LoadingGIF}"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </apex:facet>
+                </apex:actionStatus>
+                <apex:pageBlockSection rendered="{!rerenderFlag}" columns="1">
+                    <apex:panelGrid columns="1" width="100%">
+                        <img src="{!$Resource.CORE_GSK_PD_InsideTerritory}" width="20px" height="20px" align="left"/>&nbsp;&nbsp; {!$Label.CORE_GSK_PD_Inside_Territory} ({!insideTerritoryCount})
+                    </apex:panelGrid> 
+                    <apex:panelGrid columns="1" width="100%">
+                        <img src="{!$Resource.CORE_GSK_PD_outsideTerritory}" width="20px" height="20px" align="left"/>&nbsp;&nbsp; {!$Label.CORE_GSK_PD_Outside_Territory} ({!outsideTerritoryCount})
+                    </apex:panelGrid>      
+                </apex:pageBlockSection>    
+                <apex:pageBlockSection title="{!$Label.CORE_GSK_PD_Results}" id="results"  columns="2" collapsible="false" >     
+                    <apex:pageBlockSection showHeader="false" columns="1" rendered="{!rerenderFlag}" >
+                        <apex:pageBlock >
+                            <div style="overflow: scroll;height: 1200px;">
+                                <apex:pageBlockTable value="{!accountResultSorted}" var="l" >
+                                    
+                                    <apex:column onclick="jsFunction('{!l.accName}','{!l.accId}','{!l.accType}','{!l.isInTerritory}','{!l.primaryParentName}');"   rendered="{!IF(l.isInTerritory == 'true',true,false)}">         
+                                        <table style="border-width: 0px">
+                                            <tr>
+                                                <td style="width: 25px"><apex:image url="{!$Resource.CORE_GSK_PD_InsideTerritory}" width="20" height="20"  /></td>
+                                                <td>{!l.accName}<br />{!l.accAddress}</td>
+                                            </tr>     
+                                        </table>    
+                                    </apex:column> 
+                                    <apex:column onclick="jsFunction('{!l.accName}','{!l.accId}','{!l.accType}','{!l.isInTerritory}','{!l.primaryParentName}');"  rendered="{!IF(l.isInTerritory == 'false',true,false)}" >         
+                                        <table style="border-width: 0px">
+                                            <tr>
+                                                <td style="width: 25px"><apex:image url="{!$Resource.CORE_GSK_PD_outsideTerritory}" width="20" height="20"  /></td>
+                                                <td>{!l.accName}<br />{!l.accAddress}</td>
+                                            </tr>    
+                                        </table> 
+                                    </apex:column>  
+                                    
+                                </apex:pageBlockTable>  
+                            </div>
+                        </apex:pageBlock>
+                    </apex:pageBlockSection>
+                    
+                    <apex:outputPanel style="{!IF(rerenderFlag == false, 'display:none', 'display:block')}" >
+                        <apex:pageBlockSection id="tabelka" showHeader="false" columns="1"  >      
+                            <apex:pageblock id="adrs">
+                                <apex:commandButton value="{!$Label.CORE_GSK_PD_View_Account}" title="View selected account" action="{!redirect}" style="float:right" rendered="{!IF(accInTerritory == 'true',true,false)}" />
+                                <apex:commandButton value="{!$Label.CORE_GSK_PD_Add_to_my_Territory}" title="Add selected account to my territory" onclick="return confirmAddTerritory();" style="float:right" rendered="{!IF(accInTerritory == 'false',true,false)}" />
+                                <apex:outputPanel >   
+                                    <apex:image url="{!$Resource.CORE_GSK_PD_accountPic_HCP_ORANGE}" width="40" height="40" rendered="{!IF(currentAccountType == 'HCP',IF(accInTerritory == 'true',true,false),false)}" />
+                                    <apex:image url="{!$Resource.CORE_GSK_PD_accountPic_HCP_GREY}" width="40" height="40" rendered="{!IF(currentAccountType == 'HCP',IF(accInTerritory == 'false',true,false),false)}" />
+                                    <apex:image url="{!$Resource.CORE_GSK_PD_accountPic_HCO_ORANGE}" width="40" height="40" rendered="{!IF(currentAccountType == 'HCO',IF(accInTerritory == 'true',true,false),false)}" />
+                                    <apex:image url="{!$Resource.CORE_GSK_PD_accountPic_HCO_GREY}" width="40" height="40" rendered="{!IF(currentAccountType == 'HCO',IF(accInTerritory == 'false',true,false),false)}" />
+                                    <apex:outputText style="vertical-align: text-top;" rendered="{!IF(currentAccountType == 'HCP',true,false)}"> {!$Label.CORE_GSK_PD_Professional}</apex:outputText>
+                                    <apex:outputText style="vertical-align: text-top;" rendered="{!IF(currentAccountType == 'HCO',true,false)}"> {!$Label.CORE_GSK_PD_Organization}</apex:outputText>
+                                    <br/>
+                                    <apex:outputText value="{!currentAccountName}" style="font-size:large;font-weight:bold;font-family:Arial,Helvetica,sans-serif" >{!$Label.CORE_GSK_PD_Account_Name}: &nbsp; </apex:outputText><br/>
+                                    <br/>
+                                    
+                                    <apex:outputText value="{!currentPrimaryParentName}" style="font-size:small;font-weight:bold;font-family:Arial,Helvetica,sans-serif;text-align:center;font-style:italic;" >{!$Label.CORE_GSK_PD_Primary_Parent_Name}: &nbsp; </apex:outputText><br/>                                    
+                                    <br/>
+                                </apex:outputPanel> 
+                                <apex:pageBlockTable value="{!details}" var="a" rendered="true" border="0">
+                                    <apex:column headerValue="{!$Label.CORE_GSK_PD_Addresses_associated_with_selected_Account}"> 
+                                        <table>
+                                            <tr >
+                                                <th style="width: 28%; font-weight: bold">{!$Label.CORE_GSK_PD_Primary_Address}</th>
+                                                <td>
+                                                    <apex:outputText rendered="{!IF(a.primary == 'true',true,false)}">&#x2714;</apex:outputText>
+                                                    <apex:outputText rendered="{!IF(a.primary == 'false',true,false)}">&#x2718;</apex:outputText>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th style="width: 28%; font-weight: bold" valign="top">{!$Label.CORE_GSK_PD_Address}:</th>
+                                                <td><apex:outputText label="{!$Label.CORE_GSK_PD_Street}" value="{!a.addressLine1}" id="theValue2"/><br />
+                                                    <apex:outputText title="{!$Label.CORE_GSK_PD_City}" value="{!a.city}" id="theValue5"/><br/>
+                                                    <apex:outputText title="{!$Label.CORE_GSK_PD_Country}" value="{!a.country}" id="theValue6"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        
+                                    </apex:column>
+                                </apex:pageBlockTable>      
+                            </apex:pageblock>    
+                        </apex:pageBlockSection>
+                    </apex:outputPanel>
+                </apex:pageBlockSection>    
+            </apex:pageBlock>  
+        </apex:slds>
+    </apex:form>
+</apex:page>
