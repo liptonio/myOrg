@@ -1,0 +1,35 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="accounts" type="Account" /> 
+    
+    <force:recordData aura:id="service" 
+                      recordId="{!v.recordId}"
+                      targetFields="{!v.accounts}" 
+                      fields="['Id', 'Name']" />
+    
+       <aura:handler event="ltng:selectSObject" action="{!c.recordChangeHandler}"/>
+
+    <lightning:card>
+        <aura:set attribute="title">
+            <lightning:icon iconName="standard:household"/> 
+            <span class="title">&nbsp;Summary</span>
+        </aura:set>
+        <aura:set attribute="actions">
+            <lightning:buttonIcon iconName="utility:preview" variant="bare" alternativeText="Edit Record" onclick="{!c.redirectToSobject}" />
+        </aura:set>
+        
+        <aura:if isTrue="{!v.recordId==undefined}">
+            <div aura:id="selectSection" class="select slds-text-color-weak">
+                Select an account
+            </div> 
+        </aura:if>
+        
+        <aura:if isTrue="{!v.recordId!=undefined}">
+            <div class="summary">
+                <p>{!v.accounts.Id},&nbsp;{!v.accounts.Name}</p>
+                
+            </div>
+        </aura:if>
+        
+    </lightning:card>
+</aura:component>
