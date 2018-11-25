@@ -1,0 +1,4 @@
+<apex:page >
+  <flow:interview name="Reassign_accounts"/>
+
+</apex:page>

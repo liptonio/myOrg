@@ -1,0 +1,20 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes">
+    <!-- attributes -->
+    <aura:attribute name="zoomLevel" type="Integer" />
+
+    <aura:attribute name="BillingLatitude" type="Decimal"/>
+    <aura:attribute name="BillingLongitude" type="Decimal"/>
+
+  
+    <!-- handlers-->
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+   
+
+    <!-- the map component -->
+    <lightning:map 
+        mapMarkers="{!v.mapMarkers}" 
+        zoomLevel="{!v.zoomLevel}"
+    />
+    
+</aura:component>

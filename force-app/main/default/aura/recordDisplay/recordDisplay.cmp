@@ -1,0 +1,30 @@
+<aura:component controller="AccountList" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
+    <aura:attribute name="accounts" type="List" />
+    <aura:attribute name="BillingLatitude" type="Decimal"/>
+    <aura:attribute name="BillingLongitude" type="Decimal"/>
+
+    <aura:registerEvent name="selectSObject" type="ltng:selectSObject"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    
+    
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered" role="grid">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th scope="col"><div class="slds-truncate" title="Name">Name</div></th>
+            </tr>
+        </thead>
+        <tbody>
+         
+            <aura:iteration items="{!v.accounts}" var="accounts" > 
+                <tr class="slds-scrollable" >
+                    <td data-label="Account Name">
+                        <a onclick="{!c.accountSelected}" data-myvalue="{!accounts.Id}" data-lat="{!accounts.Name}" data-long="{!accounts.BillingLongitude}" >
+                            <div class="slds-truncate" title="Name">{!accounts.Name}</div>
+                        </a>
+                    </td>  
+                </tr>
+            </aura:iteration>
+        </tbody>
+    </table>
+</aura:component>
