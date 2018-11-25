@@ -1,6 +1,6 @@
 ({
-    init: function (cmp, event, helper) {
-        cmp.set('v.mapMarkers', [
+    init: function (component, event, helper) {
+        component.set('v.mapMarkers', [
             {
                 location: {
                     'Latitude': component.get("v.BillingLatitude"),
@@ -11,6 +11,6 @@
                 description: 'Landmark, historic home & office of the United States president, with tours for visitors.'
             }
         ]);
-        cmp.set('v.zoomLevel', 1);
+        component.set('v.zoomLevel', 1);
     }
 })

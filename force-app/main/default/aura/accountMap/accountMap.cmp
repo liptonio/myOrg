@@ -1,7 +1,8 @@
 <aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes">
     <!-- attributes -->
     <aura:attribute name="zoomLevel" type="Integer" />
-
+    <aura:attribute name="mapMarkers" type="Object"/>
+    
     <aura:attribute name="BillingLatitude" type="Decimal"/>
     <aura:attribute name="BillingLongitude" type="Decimal"/>
 
