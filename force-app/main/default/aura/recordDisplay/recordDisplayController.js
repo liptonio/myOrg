@@ -19,13 +19,8 @@
         var latitude = cmp.dataset.lat;
         var longitude = cmp.dataset.long;
 
-        console.info(latitude);
-        console.info(longitude);
-        console.info(attribute);
-
-        
-      //  myEvent.setParams({"BillingLatitude": adr.BillingLatitude});
-       // myEvent.setParams({"BillingLongitude": adr.BillingLongitude});
+        myEvent.setParams({"BillingLatitude": adr.latitude});
+        myEvent.setParams({"BillingLongitude": adr.longitude});
         myEvent.setParams({"recordId": attribute});
         myEvent.fire();
     }

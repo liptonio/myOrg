@@ -3,14 +3,14 @@
         cmp.set('v.mapMarkers', [
             {
                 location: {
-                    'Latitude': '37.790197',
-                    'Longitude': '-122.396879'
+                    'Latitude': component.get("v.BillingLatitude"),
+                    'Longitude': component.get("v.BillingLongitude")
                 },
 
                 title: 'The White House',
                 description: 'Landmark, historic home & office of the United States president, with tours for visitors.'
             }
         ]);
-        cmp.set('v.zoomLevel', 5);
+        cmp.set('v.zoomLevel', 1);
     }
 })
