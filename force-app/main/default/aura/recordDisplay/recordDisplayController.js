@@ -11,16 +11,14 @@
     accountSelected : function(component,event) {  
         var myEvent = $A.get("e.ltng:selectSObject");
 
-        var adr = component.get("c.getAccounts");
-
         var cmp = event.currentTarget;
+        
         var attribute = cmp.dataset.myvalue;
-
         var latitude = cmp.dataset.lat;
         var longitude = cmp.dataset.long;
 
-        myEvent.setParams({"BillingLatitude": adr.latitude});
-        myEvent.setParams({"BillingLongitude": adr.longitude});
+        myEvent.setParams({"BillingLatitude": latitude});
+        myEvent.setParams({"BillingLongitude": longitude});
         myEvent.setParams({"recordId": attribute});
         myEvent.fire();
     }
