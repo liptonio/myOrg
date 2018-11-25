@@ -9,17 +9,21 @@
             $A.enqueueAction(action);
     },
     accountSelected : function(component,event) {  
+        // standard event to pass record Id
         var myEvent = $A.get("e.ltng:selectSObject");
-
         var cmp = event.currentTarget;
-        
         var attribute = cmp.dataset.myvalue;
+        myEvent.setParams({"recordId": attribute});
+
+        myEvent.fire();
+        // custom application event called c:positionEvent
+        var appEvent = $A.get("e.c:positionEvent");
         var latitude = cmp.dataset.lat;
         var longitude = cmp.dataset.long;
 
-        myEvent.setParams({"BillingLatitude": latitude});
-        myEvent.setParams({"BillingLongitude": longitude});
-        myEvent.setParams({"recordId": attribute});
-        myEvent.fire();
+        appEvent.setParams({"BillingLatitude": latitude});
+        appEvent.setParams({"BillingLongitude": longitude});
+        
+        appEvent.fire();
     }
 });

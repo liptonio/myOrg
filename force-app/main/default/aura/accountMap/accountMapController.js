@@ -16,26 +16,26 @@
     },
     recordChangeHandler : function(component, event) {
 
-        var lang = event.getParam("BillingLatitude");
-        var lat = event.getParam("BillingLongitude");
+        var Id = event.getParam("recordId");
+        component.set("v.recordId", Id);
+        var service = component.find("service");
+        service.reloadRecord();
+    },
+    recordChangeMarker : function(component,event) {
+        var lat = event.getParam("BillingLatitude");
+        var lang = event.getParam("BillingLongitude");
         console.info(lat);
-
+        console.info(lang);
         component.set('v.mapMarkers', [
             {
                 location: {
-                    'Latitude': lang,
-                    'Longitude': lat
+                    'Latitude': lat,
+                    'Longitude': lang
                 },
 
                 title: 'The White House',
                 description: 'Landmark, historic home & office of the United States president, with tours for visitors.'
             }
         ]);
-
-        var Id = event.getParam("recordId");
-        console.info(Id);
-        component.set("v.recordId", Id);
-        var service = component.find("service");
-        service.reloadRecord();
-	}
+    }
 })
