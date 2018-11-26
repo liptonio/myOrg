@@ -16,6 +16,8 @@ VERSION                 AUTHOR            DATE              DETAIL            De
 
 public without sharing class CORE_GSK_PD_searchAccountsController {  
     
+
+    
     public static String searchTextName {get;set;}      				// Account name from VF page
     public static String searchTextLocation {get;set;}  				// Location 
     public string currentAccountId {get;set;}          			   	    // Current ID of clicked account on VF page
@@ -255,6 +257,8 @@ public without sharing class CORE_GSK_PD_searchAccountsController {
         for(UserTerritory utl : utList){
             territoryIds.add(utl.TerritoryId);
         }
+
+        
         List<Territory> terList = [SELECT Name FROM Territory WHERE Id IN: territoryIds];
         // get only territory names for current user
         for(Territory trName : terList){
