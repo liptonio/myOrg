@@ -1,4 +1,4 @@
-    <!--c:positionEvent-->
+<!--c:aeEvent-->
     <aura:event type="APPLICATION">
         <aura:attribute name="BillingLatitude" type="Decimal"/>
         <aura:attribute name="BillingLongitude" type="Decimal"/>

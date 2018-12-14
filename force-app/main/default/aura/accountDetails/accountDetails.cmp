@@ -1,5 +1,4 @@
 <aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
-    <aura:attribute name="recordId" type="Id" />
     <aura:attribute name="accounts" type="Account" /> 
     
     <force:recordData aura:id="service" 

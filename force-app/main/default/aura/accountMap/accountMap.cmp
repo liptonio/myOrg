@@ -6,17 +6,8 @@
     <aura:attribute name="Latitude" type="Decimal"/>
     <aura:attribute name="Longitude" type="Decimal"/>
 
-    
-
-    <force:recordData aura:id="service" 
-                         recordId="{!v.RecordId}" 
-                         fields="['Id','Name','BillingLatitude','BillingLongitude']"/>
-
-    
-
   <!-- handlers-->
   <aura:handler event="c:positionEvent" action="{!c.recordChangeMarker}"/>
-  <aura:handler event="ltng:selectSObject" action="{!c.recordChangeHandler}"/>
   <aura:handler name="init" value="{!this}" action="{!c.init}"/>
 
     <!-- the map component -->

@@ -1,8 +1,9 @@
 <aura:component controller="AccountList" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
     <aura:attribute name="accounts" type="List" />
+    <aura:attribute name="BillingLatitude" type="Decimal"/>
+    <aura:attribute name="BillingLongitude" type="Decimal"/>
 
     <aura:registerEvent name="selectSObject" type="ltng:selectSObject"/>
-    <aura:registerEvent name="appEvent" type="c:positionEvent"/>
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
 
     
